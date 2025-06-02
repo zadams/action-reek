@@ -27,15 +27,15 @@ if [ "$INPUT_REEK_VERSION" = "gemfile" ]; then
     # left it empty otherwise, so no version will be passed
     if [ -n "$REEK_GEMFILE_VERSION" ]; then
       REEK_VERSION=$REEK_GEMFILE_VERSION
-      else
-        printf "Cannot get the reek's version from Gemfile.lock. The latest version will be installed."
-    fi
     else
-      printf 'Gemfile.lock not found. The latest version will be installed.'
-  fi
+      printf "Cannot get the reek's version from Gemfile.lock. The latest version will be installed."
+    fi
   else
-    # set desired reek version
-    REEK_VERSION=$INPUT_REEK_VERSION
+    printf 'Gemfile.lock not found. The latest version will be installed.'
+  fi
+else
+  # set desired reek version
+  REEK_VERSION=$INPUT_REEK_VERSION
 fi
 
 # shellcheck disable=SC2046,SC2086
@@ -46,8 +46,9 @@ export REVIEWDOG_GITHUB_API_TOKEN="${INPUT_GITHUB_TOKEN}"
 
 echo '::group:: Running reek with reviewdog 🐶 ...'
 # shellcheck disable=SC2086
-reek --single-line . ${INPUT_REEK_FLAGS} \
-  | reviewdog -f=reek \
+
+reek --single-line . ${INPUT_REEK_FLAGS} |
+  reviewdog -f=reek \
     -name="${INPUT_TOOL_NAME}" \
     -reporter="${INPUT_REPORTER}" \
     -filter-mode="${INPUT_FILTER_MODE}" \
